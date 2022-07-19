@@ -1,5 +1,36 @@
 using Dates, DataFrames, ShiftedArrays, CSV
 f = open("C:/Users/tom_j/Downloads/center_of_mass/nga22121.eph", "r")
+#=
+function read_sp3(path)
+    
+    f = open(path, "r")
+
+    file = readlines(f)
+
+    data = file[23:length(file)-1]
+
+    dates = []
+    positions = []
+    velocities = []
+
+    for j in 1:length(data)
+        sp = split(data[j])
+        if 1 == j % 65
+            for i = 1:32
+                push!(dates, parse.(Int64,sp[2:6]))
+                i+=1
+            end
+        else
+            if 1 == j % 2
+                push!(positions, parse.(Float64,sp[2:6]))
+            else
+                push!(velocities, parse.(Float64,sp[3:6]))
+            end
+        end
+    end
+    return mapreduce(permutedims,vcat,vcat.(positions, velocities, dates))
+end
+=#
 
 file = readlines(f)
 
