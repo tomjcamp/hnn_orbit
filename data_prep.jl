@@ -1,34 +1,58 @@
 using Dates, DataFrames, ShiftedArrays, CSV
 f = open("C:/Users/tom_j/Downloads/center_of_mass/nga22121.eph", "r")
 #=
-function read_sp3(in, out)
+ephem_dir = "Q:/Ninneman/machine_learning_timeseries_forecast/data/ECEF/PEs/2021"
+ephem_lst = readdir(ephem_dir)
+
+out = "H:/parsed_ephem.csv"
+
+f = open(out, "a")
+
+header = ["prn", "x_pos", "y_pos", "z_pos", "clock_pos", "x_vel", "y_vel", "z_vel", "clock_vel", "year", "month", "day", "hour", "minute"]
+
+println(f, join(header, ", "))
+
+function read_sp3(in)
     f = open(in, "r")
     file = readlines(f)
     data = file[23:length(file)-1]
     dates = []
     positions = []
     velocities = []
+    sp_d = []
     for j in 1:length(data)
         sp = split(data[j])
-        if 1 == j % 65
-            for i = 1:32
-                push!(dates, parse.(Int64,sp[2:6]))
-                i+=1
-            end
+        if sp[1] == "*"
+            sp_d = sp
         else
-            if 1 == j % 2
+            if sp[1] == "P"
                 push!(positions, parse.(Float64,sp[2:6]))
+                push!(dates, parse.(Float64,sp_d[2:6]))
             else
                 push!(velocities, parse.(Float64,sp[3:6]))
             end
         end
     end
-    data = vcat.(positions, velocities, dates)
-    f = open(out, "a") 
-    for i in 1:length(data)
-        println(f, data[i])
+    return vcat.(positions, velocities, dates)
+end
+
+function print_data(in, stream)
+    data = read_sp3(in)
+    for i in 1:length(data) 
+        println(stream, join(data[i], ", "))
     end
 end
+
+function loopit(ephem_lst)
+    for path in ephem_lst
+        pth = ephem_dir * "/" * path
+        print_data(pth, f)  
+    end
+end
+
+@time loopit(ephem_lst)
+
+close(f)
 =#
 
 file = readlines(f)
