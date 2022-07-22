@@ -1,10 +1,10 @@
 using Dates, DataFrames, ShiftedArrays, CSV
 f = open("C:/Users/tom_j/Downloads/center_of_mass/nga22121.eph", "r")
 #=
-ephem_dir = "Q:/Ninneman/machine_learning_timeseries_forecast/data/ECEF/PEs/2021"
+ephem_dir = "path to ephemerides"
 ephem_lst = readdir(ephem_dir)
 
-out = "H:/parsed_ephem.csv"
+out = "path to destination"
 
 f = open(out, "a")
 
